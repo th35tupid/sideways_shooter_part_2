@@ -1,6 +1,7 @@
 import pygame
 import sys
 from pygame.sprite import Sprite
+from random import randint
 
 class Shooter:
     def __init__(self, ss):
@@ -15,9 +16,9 @@ class Shooter:
         
     def update(self):
         if self.moving_up and self.r_rect.top > ss.screen_rect.top:
-            self.r_rect.y-=2
+            self.r_rect.y-=5
         if self.moving_down and self.r_rect.bottom < ss.screen_rect.bottom:
-            self.r_rect.y+=2
+            self.r_rect.y+=5
 
             
 class Bullet(Sprite):
@@ -30,7 +31,17 @@ class Bullet(Sprite):
     def update(self):
         self.b_rect.x+=5
         pygame.draw.rect(ss.screen, self.b_color,self.b_rect)
-            
+
+
+class Alien(Sprite):
+    def __init__(self,ss):
+        super().__init__()
+        self.a_image=pygame.image.load('images/alien.png')
+        self.a_rect=self.a_image.get_rect()
+        
+    def update(self):
+        ss.screen.blit(self.a_image, self.a_rect)            
+        
 class SidewaysShooter:
     def __init__(self):
         pygame.init()
@@ -51,6 +62,13 @@ class SidewaysShooter:
         for bullet in self.bullets.copy():
             if bullet.b_rect.right > self.screen_rect.right:
                 self.bullets.remove(bullet)
+                
+    def _create_aliens(self):
+        alien=Alien(self)
+        alien.a_rect.x=randint(4*ss.shooter.r_rect.width, ss.screen_rect.width - alien.a_rect.width)        
+        alien.a_rect.y=randint(2, ss.screen_rect.height - alien.a_rect.height)
+        self.aliens.add(alien)
+                
     def _check_events(self):
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
@@ -79,6 +97,8 @@ class SidewaysShooter:
     def _update_screen(self):
         self.screen.fill(self.bg_color)
         self.bullets.update()
+        self._create_aliens()
+        self.aliens.update()
         self.screen.blit(self.shooter.r_image, self.shooter.r_rect)
         self.shooter.update()
         pygame.display.flip()
