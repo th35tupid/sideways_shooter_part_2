@@ -60,7 +60,7 @@ class SidewaysShooter:
         self.shooter=Shooter(self)
         self.bullets=pygame.sprite.Group()
         self.aliens=pygame.sprite.Group()
-        self.last_create_time=pygame.time.get_ticks()
+        self.last_creation_time=pygame.time.get_ticks()
         self.create_aliens_delay=900
         
     def _fire_bullets(self):
