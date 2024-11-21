@@ -108,9 +108,9 @@ class SidewaysShooter:
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
         self.bullets.update()
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_create_time >= self.create_aliens_delay:
+        if current_time - self.last_creation_time >= self.create_aliens_delay:
             self._create_aliens()
-            self.last_create_time = current_time
+            self.last_creation_time = current_time
         self.aliens.update()
         self.screen.blit(self.shooter.r_image, self.shooter.r_rect)
         self.shooter.update()
