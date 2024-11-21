@@ -10,6 +10,7 @@ class Shooter:
         self.image=pygame.image.load('images/shooter.png')
         self.r_image=pygame.transform.rotate(self.image, angle)
         self.r_rect=self.r_image.get_rect()
+        self.rect=self.r_rect
         self.r_rect.midleft=ss.screen_rect.midleft        
         self.moving_up=False
         self.moving_down=False        
@@ -62,6 +63,8 @@ class SidewaysShooter:
         self.aliens=pygame.sprite.Group()
         self.last_creation_time=pygame.time.get_ticks()
         self.create_aliens_delay=900
+        self.game_active=True
+        self.ship_limit=3
         
     def _fire_bullets(self):
         new_bullet=Bullet(self.shooter)
@@ -102,15 +105,26 @@ class SidewaysShooter:
             self.shooter.moving_down=True
         elif event.key==pygame.K_SPACE:
             self._fire_bullets()
-    
+
+    def _ship_hit(self):
+        if self.ship_limit > 1:
+            self.ship_limit-=1
+            self.bullets.empty()
+            self.aliens.empty()
+            self.shooter.r_rect.midleft=self.screen_rect.midleft        
+        else:
+            self.game_active=False    
     def _update_screen(self):
         self.screen.fill(self.bg_color)
-        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)        
         self.bullets.update()
         current_time = pygame.time.get_ticks()
         if current_time - self.last_creation_time >= self.create_aliens_delay:
             self._create_aliens()
             self.last_creation_time = current_time
+        if pygame.sprite.spritecollideany(self.shooter, self.aliens):
+            self._ship_hit()
+            pygame.time.delay(700)
         self.aliens.update()
         self.screen.blit(self.shooter.r_image, self.shooter.r_rect)
         self.shooter.update()
@@ -119,8 +133,9 @@ class SidewaysShooter:
     def run_game(self):
         while 1:
             self._check_events()
-            self._update_bullets_group()
-            self._update_screen()
+            if self.game_active:
+                self._update_bullets_group()
+                self._update_screen()
             self.clock.tick(60)
         
 if __name__=='__main__':

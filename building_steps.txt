@@ -5,3 +5,4 @@
 5. Draw the aliens.
 6. Move the aliens.
 7. Pierce the aliens.
+8. Set a game over condition.
