@@ -27,7 +27,7 @@ class Bullet(Sprite):
         self.b_rect=pygame.Rect(0,0,12,3)
         self.b_rect.midleft=ss.r_rect.midright
         self.b_color=(255,255,255)
-
+        self.rect=self.b_rect
     def update(self):
         self.b_rect.x+=10
         pygame.draw.rect(ss.screen, self.b_color,self.b_rect)
@@ -38,6 +38,7 @@ class Alien(Sprite):
         super().__init__()
         self.a_image=pygame.image.load('images/alien.png')
         self.a_rect=self.a_image.get_rect()
+        self.rect=self.a_rect
 
     def update(self):
         self.x=float(self.a_rect.x)
@@ -60,7 +61,7 @@ class SidewaysShooter:
         self.bullets=pygame.sprite.Group()
         self.aliens=pygame.sprite.Group()
         self.last_create_time=pygame.time.get_ticks()
-        self.create_aliens_delay=3000
+        self.create_aliens_delay=900
         
     def _fire_bullets(self):
         new_bullet=Bullet(self.shooter)
@@ -73,7 +74,7 @@ class SidewaysShooter:
                 
     def _create_aliens(self):
         alien=Alien(self)
-        alien.a_rect.x=randint(4*ss.shooter.r_rect.width, ss.screen_rect.width - alien.a_rect.width)        
+        alien.a_rect.x=randint(6*ss.shooter.r_rect.width, ss.screen_rect.width - alien.a_rect.width)        
         alien.a_rect.y=randint(2, ss.screen_rect.height - alien.a_rect.height)
         self.aliens.add(alien)
                 
@@ -104,6 +105,7 @@ class SidewaysShooter:
     
     def _update_screen(self):
         self.screen.fill(self.bg_color)
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
         self.bullets.update()
         current_time = pygame.time.get_ticks()
         if current_time - self.last_create_time >= self.create_aliens_delay:
