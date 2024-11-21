@@ -1,0 +1,7 @@
+1. Create a pygame window.
+2. Draw the shooter in the left side.
+3. Move the shooter.
+4. Add the bullets.
+5. Draw the aliens.
+6. Move the aliens.
+7. Pierce the aliens.
